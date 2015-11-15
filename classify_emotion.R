@@ -14,7 +14,7 @@ classify_emotion <- function(textColumns,algorithm="bayes",prior=1.0,verbose=FAL
 		for (word in words) {
             for (key in names(scores)) {
                 emotions <- lexicon[which(lexicon[,2]==key),]
-                index <- pmatch(word,emotions[,1],nomatch=0)
+                index <- match(word,emotions[,1],nomatch=0)
                 if (index > 0) {
                     entry <- emotions[index,]
                     

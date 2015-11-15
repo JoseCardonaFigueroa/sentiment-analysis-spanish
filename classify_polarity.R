@@ -14,7 +14,7 @@ classify_polarity <- function(textColumns,algorithm="bayes",pstrong=0.5,pweak=1.
 		words <- findFreqTerms(doc,lowfreq=1)
 		
 		for (word in words) {
-			index <- pmatch(word,lexicon[,1],nomatch=0)
+			index <- match(word,lexicon[,1],nomatch=0)
 			if (index > 0) {
 				entry <- lexicon[index,]
 				
