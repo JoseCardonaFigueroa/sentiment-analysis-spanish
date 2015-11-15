@@ -4,7 +4,7 @@ source('classify_polarity.R')
 source('create_matrix.R')
 source('classify_emotion.R')
 
-corpus2 <- read.csv("data/corpusCommentsStem.csv", header = F)
+corpus2 <- read.csv("data/corpusWithOneSpace.csv")
 
 # classify emotion
 class_emo = classify_emotion(corpus2, algorithm="bayes", prior=1.0)
