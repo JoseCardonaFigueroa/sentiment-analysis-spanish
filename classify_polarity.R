@@ -2,7 +2,7 @@ classify_polarity <- function(textColumns,algorithm="bayes",pstrong=0.5,pweak=1.
 
   
   	matrix <- create_matrix(textColumns,...)
-	lexicon <- read.csv("data/subjectivity.csv",header=FALSE)
+	lexicon <- read.csv("data/subjectivitynorepeated.csv",header=FALSE)
 
 	counts <- list(positive=length(which(lexicon[,3]=="positive")),negative=length(which(lexicon[,3]=="negative")),total=nrow(lexicon))
 	documents <- c()
@@ -12,9 +12,12 @@ classify_polarity <- function(textColumns,algorithm="bayes",pstrong=0.5,pweak=1.
 		scores <- list(positive=0,negative=0)
 		doc <- matrix[i,]
 		words <- findFreqTerms(doc,lowfreq=1)
-		
+		negation <- as.integer(0)
 		for (word in words) {
-			index <- match(word,lexicon[,1],nomatch=0)
+			index <- match(word,lexicon[,1], nomatch=0)
+			if (!is.na(match(word, 'no'))) {
+			  negation <-as.integer(negation + 1)
+			}
 			if (index > 0) {
 				entry <- lexicon[index,]
 				
@@ -50,13 +53,13 @@ classify_polarity <- function(textColumns,algorithm="bayes",pstrong=0.5,pweak=1.
         best_fit <- names(scores)[which.max(unlist(scores))]
         ratio <- as.integer(abs(scores$positive/scores$negative))
         if (ratio==1) best_fit <- "neutral"
-		documents <- rbind(documents,c(scores$positive,scores$negative,abs(scores$positive/scores$negative),best_fit))
+		documents <- rbind(documents,c(scores$positive,scores$negative,abs(scores$positive/scores$negative),best_fit, negation))
 		if (verbose) {
 			print(paste("POS:",scores$positive,"NEG:",scores$negative,"RATIO:",abs(scores$positive/scores$negative)))
 			cat("\n")
 		}
 	}
 	
-	colnames(documents) <- c("POS","NEG","POS/NEG","BEST_FIT")
+	colnames(documents) <- c("POS","NEG","POS/NEG","BEST_FIT", "NEGATION WORDS")
 	return(documents)
 }
