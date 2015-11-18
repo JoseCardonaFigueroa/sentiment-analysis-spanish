@@ -1,6 +1,5 @@
 .Rproj.user
 .Rhistory
 .RData
-data/corpusWithOneSpace.csv
 data/match-results.txt
 data/corpusCommentsStem.csv
