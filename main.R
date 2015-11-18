@@ -13,7 +13,7 @@ emotion = class_emo[,7]
 emotion[is.na(emotion)] = "unknown"
 
 # classify polarity
-class_pol = classify_polarity(corpus2$text, algorithm="bayes", minWordLength = 1)
+class_pol = classify_polarity(corpus2$text, algorithm="bayes")
 # get polarity best fit
 polarity = class_pol[,4]
 
