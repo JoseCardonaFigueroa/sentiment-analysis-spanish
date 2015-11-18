@@ -3,6 +3,7 @@ classify_polarity <- function(textColumns,algorithm="bayes",pstrong=0.5,pweak=1.
   
   	matrix <- create_matrix(textColumns,...)
 	lexicon <- read.csv("data/subjectivitynorepeated.csv",header=FALSE)
+	sink("output.txt")
 
 	counts <- list(positive=length(which(lexicon[,3]=="positive")),negative=length(which(lexicon[,3]=="negative")),total=nrow(lexicon))
 	documents <- c()
@@ -28,9 +29,12 @@ classify_polarity <- function(textColumns,algorithm="bayes",pstrong=0.5,pweak=1.
 				score <- pweak
                 if (polarity == "strongsubj") score <- pstrong
 				if (algorithm=="bayes") score <- abs(log(score*prior/count))
-		
+	
+				
+				
 				if (verbose) {
                     print(paste("WORD:",word,"CAT:",category,"POL:",polarity,"SCORE:",score))
+				            
 				}
 				
 				scores[[category]] <- scores[[category]]+score
@@ -59,7 +63,7 @@ classify_polarity <- function(textColumns,algorithm="bayes",pstrong=0.5,pweak=1.
 			cat("\n")
 		}
 	}
-	
+	sink()
 	colnames(documents) <- c("POS","NEG","POS/NEG","BEST_FIT", "NEGATION WORDS")
 	return(documents)
 }
