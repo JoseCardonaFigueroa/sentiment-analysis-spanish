@@ -1,10 +1,10 @@
 classify_polarity <- function(textColumns,algorithm="bayes",pstrong=0.5,pweak=1.0,prior=1.0,verbose=TRUE,...) {
 
+  sink('data\\analisis_salida.txt')
   
-  	matrix <- create_matrix(textColumns,...)
-	lexicon <- read.csv("data/subjectivitynorepeated.csv",header=FALSE)
-	sink("output.txt")
-
+  matrix <- create_matrix(textColumns,...)
+  lexicon <- read.csv("data/subjectivitynorepeated.csv",header=FALSE)
+  #lexicon <- read.csv("data/subjectivityStem1.csv",header=FALSE)
 	counts <- list(positive=length(which(lexicon[,3]=="positive")),negative=length(which(lexicon[,3]=="negative")),total=nrow(lexicon))
 	documents <- c()
 
@@ -14,6 +14,7 @@ classify_polarity <- function(textColumns,algorithm="bayes",pstrong=0.5,pweak=1.
 		doc <- matrix[i,]
 		words <- findFreqTerms(doc,lowfreq=1)
 		negation <- as.integer(0)
+		
 		for (word in words) {
 			index <- match(word,lexicon[,1], nomatch=0)
 			if (!is.na(match(word, 'no'))) {
@@ -29,12 +30,9 @@ classify_polarity <- function(textColumns,algorithm="bayes",pstrong=0.5,pweak=1.
 				score <- pweak
                 if (polarity == "strongsubj") score <- pstrong
 				if (algorithm=="bayes") score <- abs(log(score*prior/count))
-	
-				
-				
+		
 				if (verbose) {
                     print(paste("WORD:",word,"CAT:",category,"POL:",polarity,"SCORE:",score))
-				            
 				}
 				
 				scores[[category]] <- scores[[category]]+score
@@ -54,16 +52,37 @@ classify_polarity <- function(textColumns,algorithm="bayes",pstrong=0.5,pweak=1.
 			}
 		}
 		
-        best_fit <- names(scores)[which.max(unlist(scores))]
-        ratio <- as.integer(abs(scores$positive/scores$negative))
-        if (ratio==1) best_fit <- "neutral"
+		#best_fit <- names(scores)[which.max(unlist(scores))]
+		#   ratio <- (abs(scores$positive/scores$negative))
+		#   if (identical(ratio,1)==TRUE) best_fit <- "neutral"
+		if (scores$positive>scores$negative) 
+		{
+		  best_fit <- "positive" 
+		}
+		else if (scores$positive<scores$negative)
+		{
+		  best_fit <- "negative" 
+		}
+		
+		else if (all(scores$positive == scores$negative) == TRUE)
+		{
+		  best_fit <- "neutral" 
+		}
+		   
 		documents <- rbind(documents,c(scores$positive,scores$negative,abs(scores$positive/scores$negative),best_fit, negation))
 		if (verbose) {
 			print(paste("POS:",scores$positive,"NEG:",scores$negative,"RATIO:",abs(scores$positive/scores$negative)))
 			cat("\n")
 		}
 	}
-	sink()
-	colnames(documents) <- c("POS","NEG","POS/NEG","BEST_FIT", "NEGATION WORDS")
+	write.table(documents, file = "check_polarity.csv", append = FALSE, quote = FALSE, sep = ";",eol = "\n", na = "NA")
+	
+	colnames(documents) <- c("POSITIVO","NEGATIVO","POSITIVO/NEGATIVO","BEST_FIT", "NEGATION WORDS")
 	return(documents)
 }
+# Stop writing to the file
+sink()
+# Append to the file
+sink('data\\analisis_salida.txt', append=TRUE)
+cat("Some more stuff here...\n")
+sink()
