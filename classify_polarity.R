@@ -1,7 +1,6 @@
 classify_polarity <- function(textColumns,algorithm="bayes",pstrong=0.5,pweak=1.0,prior=1.0,verbose=TRUE,...) {
 
-  sink('data\\analisis_salida.txt')
-  
+  sink("analisis_salida.txt")
   matrix <- create_matrix(textColumns,...)
   lexicon <- read.csv("data/subjectivitynorepeated.csv",header=FALSE)
   #lexicon <- read.csv("data/subjectivityStem1.csv",header=FALSE)
@@ -76,12 +75,10 @@ classify_polarity <- function(textColumns,algorithm="bayes",pstrong=0.5,pweak=1.
 		}
 	}
 	write.table(documents, file = "check_polarity.csv", append = FALSE, quote = FALSE, sep = ";",eol = "\n", na = "NA")
-	
+	sink()
 	colnames(documents) <- c("POSITIVO","NEGATIVO","POSITIVO/NEGATIVO","BEST_FIT", "NEGATION WORDS")
 	return(documents)
 }
-# Stop writing to the file
-sink()
 # Append to the file
 sink('data\\analisis_salida.txt', append=TRUE)
 cat("Some more stuff here...\n")
