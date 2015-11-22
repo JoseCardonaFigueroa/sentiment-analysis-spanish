@@ -12,7 +12,7 @@ library(wordcloud)
 
 #Limpieza
 
-corpus <- read.csv('C:\\Users\\Cardona\\Documents\\UIII\\corpusCommentsStem.csv')
+corpus <- read.csv('C:\\sentiment-analysis-spanish\\data\\OriginalCorpus.csv')
 corpus$opinar
 
 corpus <- laply(corpus$text, function(sentence){
@@ -22,9 +22,9 @@ corpus <- laply(corpus$text, function(sentence){
   sentence <- tolower(sentence)
 })
 
-custom.stopwords<- read.csv('C:\\Users\\Posgrado\\Desktop\\UI_DataMining\\UII_DataMining\\lista de stopwords.csv')
-cuantificadores <- read.csv('C:\\Users\\Posgrado\\Desktop\\UI_DataMining\\UII_DataMining\\cuantificadores.csv')
-sustantivos <- read.csv('C:\\Users\\Posgrado\\Desktop\\UI_DataMining\\UII_DataMining\\sustantivos.csv')
+custom.stopwords<- read.csv('CC:\\sentiment-analysis-spanish\\data\\lista de stopwords.csv')
+cuantificadores <- read.csv('C:\\sentiment-analysis-spanish\\data\\cuantificadores.csv')
+sustantivos <- read.csv('C:\\sentiment-analysis-spanish\\data\\sustantivos.csv')
 
 #Corpus object creation using tm library
 corpus <- Corpus(VectorSource(corpus))
@@ -43,15 +43,15 @@ corpus[1:3]
 dataframe.corpus.limpio<-data.frame(text=unlist(sapply(corpus, `[`, "content")))
 
 
-#Corpus limpio guardado en Corpus2.csv
-write.csv(dataframe.corpus.limpio, file = "C:\\Users\\Posgrado\\Desktop\\UI_DataMining\\UII_DataMining\\corpus2.csv", row.names = F)
+#Corpus limpio guardado en CleanCorpus.csv
+write.csv(dataframe.corpus.limpio, file = "C:\\sentiment-analysis-spanish\\data", row.names = F)
 corpus
 
 
 #***********************************************************************
 #La variable corpus2 toma el valor de los tweets del corpus22.csv (2000)
 
-corpus2 <- read.csv('C:\\Users\\Cardona\\Documents\\UIII\\corpusCommentsStem.csv')
+corpus2 <- read.csv('C:\\sentiment-analysis-spanish\\data\\CleanCorpus.csv')
 
 
 # classify emotion
