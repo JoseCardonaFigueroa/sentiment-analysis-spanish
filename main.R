@@ -1,6 +1,7 @@
 #install.packages("ggplot2")
 library(ggplot2)
 library(tm)
+library(NLP)
 source('classify_polarity.R')
 source('create_matrix.R')
 source('classify_emotion.R')
