@@ -1,11 +1,15 @@
 classify_polarity <- function(textColumns,algorithm="bayes",pstrong=0.5,pweak=1.0,prior=1.0,verbose=TRUE,...) {
-
+  
   sink("output.txt")
   matrix <- create_matrix(textColumns,...)
-  lexicon <- read.csv("data/subjectivitynorepeated.csv",header=FALSE)
-  #lexicon <- read.csv("data/subjectivityStem1.csv",header=FALSE)
+  #lexicon <- read.csv("data/subjectivitynorepeated.csv",header=FALSE)
+  #lexicon <- read.csv("data/subjectivityStemming.csv",header=FALSE)
+  lexicon <- read.csv("data/subjectivityStemming2.csv",header=FALSE)
 	counts <- list(positive=length(which(lexicon[,3]=="positive")),negative=length(which(lexicon[,3]=="negative")),total=nrow(lexicon))
 	documents <- c()
+	comneg <- 0
+	compos <- 0
+	comneu <- 0
 
 	for (i in 1:nrow(matrix)) {
 		if (verbose) print(paste("DOCUMENT",i))
@@ -57,15 +61,18 @@ classify_polarity <- function(textColumns,algorithm="bayes",pstrong=0.5,pweak=1.
 		if (scores$positive>scores$negative) 
 		{
 		  best_fit <- "positive" 
+		  compos <- compos + 1
 		}
 		else if (scores$positive<scores$negative)
 		{
 		  best_fit <- "negative" 
+		  comneg <- comneg + 1
 		}
 		
 		else if (all(scores$positive == scores$negative) == TRUE)
 		{
 		  best_fit <- "neutral" 
+		  comneu <- comneu + 1
 		}
 		   
 		documents <- rbind(documents,c(scores$positive,scores$negative,abs(scores$positive/scores$negative),best_fit, negation))
@@ -75,7 +82,10 @@ classify_polarity <- function(textColumns,algorithm="bayes",pstrong=0.5,pweak=1.
 		}
 	}
 	write.table(documents, file = "check_polarity.csv", append = FALSE, quote = FALSE, sep = ";",eol = "\n", na = "NA")
+	print(paste("Positivos: ",compos,"Negativos: ",comneg,"Neutrales: ",comneu))
+	cat("\n")
 	sink()
 	colnames(documents) <- c("POSITIVO","NEGATIVO","POSITIVO/NEGATIVO","BEST_FIT", "NEGATION WORDS")
 	return(documents)
 }
+

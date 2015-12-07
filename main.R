@@ -1,7 +1,7 @@
 #install.packages("ggplot2")
+library(NLP)
 library(ggplot2)
 library(tm)
-library(NLP)
 source('classify_polarity.R')
 source('create_matrix.R')
 source('classify_emotion.R')
@@ -22,8 +22,7 @@ class_pol = classify_polarity(corpus2$text, algorithm="bayes", minWordLength = 1
  polarity = class_pol[,4]
 
 #PROBANDO C?DIGO DE NAIVE BAYES
- sent_df = data.frame(text=corpus2, emotion=emotion,
-                    polarity=polarity, stringsAsFactors=FALSE)
+ sent_df = data.frame(text=corpus2, emotion=emotion,polarity=polarity, stringsAsFactors=FALSE)
 
  #sort data frame
 sent_df = within(sent_df,
